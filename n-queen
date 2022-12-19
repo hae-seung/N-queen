@@ -1,0 +1,54 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdbool.h>
+#include <math.h>
+
+
+int col[16];
+int setqueen(int level, int N, int count);
+bool promising(int level);
+
+int main(void)
+{
+	int count = 0;
+	for (int N = 1; N <= 15; N++)
+	{
+		int Count = setqueen(0, N, count);
+		printf("%d\n", Count);
+	}
+
+	return 0;
+}
+
+int setqueen(int level, int N, int count)
+{
+	count = 0;//각 경우에 해당하는 값을 1개씩 더할려고 함수 들어올때마다 초기화하고 그 값들을 더함
+	for (int i = 1; i <= N; i++)//첫째줄옆으로 끝까지 -> 즉 모든 경우를 다 볼때
+	{
+		col[level + 1] = i;//일단 놓아보고
+		if (promising(level + 1))//놓아진다면
+		{
+			if (level + 1 == N)
+			{
+				count++;
+				return count;
+			}
+			else
+				count = count + setqueen(level + 1, N, count);
+			//   ↑를 리턴해서 밑에서 위로 계속 더해서 끄집어 내는거임
+		}
+	}
+	return count; //해당 level 라인에 하나도 못 놓을때 or 최종으로 마지막으로 끝날때
+}
+
+bool promising(int level)
+{
+	for (int i = 1; i < level; i++)
+	{
+		if (col[i] == col[level])
+			return false;//길이 없음
+		else if (level - i == abs(col[level] - col[i]))
+			return false;//길이 없음
+	}
+	return true;//해당자리에 놓기 가능
+}
